@@ -24,9 +24,9 @@ if (Servlets.isAjaxRequest(request)) {
 else {
 %>
 <%@page import="org.slf4j.Logger,org.slf4j.LoggerFactory"%>
-<%@page import="com.qf.qauth.common.web.Servlets"%>
-<%@page import="com.qf.qauth.common.utils.Exceptions"%>
-<%@page import="com.qf.qauth.common.utils.StringUtils"%>
+<%@page import="com.qf.nauth.common.web.Servlets"%>
+<%@page import="com.qf.nauth.common.utils.Exceptions"%>
+<%@page import="com.qf.nauth.common.utils.StringUtils"%>
 <%@page contentType="text/html;charset=UTF-8" isErrorPage="true"%>
 <%@include file="/WEB-INF/views/include/taglib.jsp"%>
 <!DOCTYPE html>

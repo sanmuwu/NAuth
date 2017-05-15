@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.nauth.modules.auth.dao.AuthorizingDao">
+
+	<!-- 用户相关角色的权限集合 -->
+	<resultMap id="roleListResult" type="roleListEntity">
+		<result property="systemId" column="systemId" />
+		<collection property="roleList" ofType="roleEntity">
+			<id property="roleID" column="roleList.roleID" />
+			<result property="roleName" column="roleList.roleName" />
+			<result property="roleDesc" column="roleList.roleDesc" />
+		</collection>
+	</resultMap>
+
+	<!-- 用户相关角色的权限集合 -->
+	<resultMap id="menuListResult" type="menuListEntity">
+		<result property="systemId" column="systemId" />
+		<collection property="menuList" ofType="menuEntity">
+			<id property="id" column="menuList.id" />
+			<result property="menuName" column="menuList.menuName" />
+			<result property="menuHref" column="menuList.menuHref" />
+			<collection property="fieldList" ofType="fieldEntity">
+				<id property="id" column="fieldList.id" />
+				<result property="fieldId" column="fieldList.fieldId" />
+				<result property="fieldName" column="fieldList.fieldName" />
+			</collection>
+		</collection>
+	</resultMap>
+
+	<sql id="userColumns">
+		a.id,
+		a.login_name AS userId,
+		a.name AS userName
+	</sql>
+
+	<!-- 根据登录名查询用户 -->
+	<select id="getByLoginName" resultType="userEntity">
+		SELECT
+		<include refid="userColumns" />
+		FROM sys_user a
+		WHERE a.login_name = #{userId} AND a.del_flag ='0'
+		LIMIT 1;
+	</select>
+
+	<!-- 查询用户角色集合 -->
+	<select id="getRoleListByUser" parameterType="java.util.Map"
+		resultMap="roleListResult">
+		SELECT DISTINCT
+		SUBSTRING_INDEX(r.enname, '_', 1) AS 'systemId',
+		r.id AS
+		'roleList.roleID',
+		r.name AS 'roleList.roleName',
+		r.remarks AS
+		'roleList.roleDesc'
+		FROM sys_role r
+		JOIN sys_user_role ur ON ur.role_id
+		= r.id
+		WHERE r.del_flag ='0'
+		AND ur.user_id = #{id}
+		<if test="systemId !=null and systemId !=''">
+			AND SUBSTRING_INDEX(r.enname, '_', 1) = upper(#{systemId})
+		</if>
+	</select>
+
+	<!-- 授权用户菜单查询 -->
+	<select id="getMenuList" parameterType="java.util.Map"
+		resultMap="menuListResult">
+		<![CDATA[SELECT DISTINCT
+						SUBSTRING_INDEX(r.enname, '_', 1) AS systemid,
+						m.id AS 'menuList.id',
+						m.`name` AS 'menuList.menuName',
+						m.href AS 'menuList.menuHref',
+						m.sort,
+						sm.id AS 'fieldList.id',
+						sm.permission AS 'fieldList.fieldId',
+						sm.`name` AS 'fieldList.fieldName'
+						FROM
+						(
+						sys_user u,
+						sys_role r,
+						sys_user_role ur,
+						sys_role_menu rm
+						),
+						sys_menu m
+				  LEFT JOIN sys_menu sm ON (
+						m.id = sm.parent_id
+						AND sm.del_flag = '0'
+						AND m.del_flag = '0'
+						)
+				   WHERE
+						m.href IS NOT NULL
+						AND m.href != ''
+						AND ur.role_id = r.id
+						AND ur.user_id = u.id
+						AND r.useable = '1'
+						AND r.del_flag = '0'
+						AND u.del_flag = '0'
+						AND rm.role_id = r.id
+						AND rm.menu_id = m.id
+						AND SUBSTRING_INDEX(SUBSTRING(m.href, 2), '/', 1) NOT IN (
+						SELECT DISTINCT
+						       SUBSTRING_INDEX(enname, '_', 1) AS systemId
+						  FROM sys_role
+						)
+					   AND u.login_name = #{userId}]]>
+		<if test="systemId !=null and systemId !=''">
+		<![CDATA[AND SUBSTRING_INDEX(r.enname, '_', 1) = upper(#{systemId})]]>
+		</if>
+		<![CDATA[UNION ALL
+		
+		         SELECT DISTINCT
+						IF (
+						SUBSTRING_INDEX(r.enname, '_', 1) =
+						SUBSTRING_INDEX(SUBSTRING(m.href, 2), '/', 1),
+						SUBSTRING_INDEX(r.enname, '_', 1),
+						SUBSTRING_INDEX(SUBSTRING(m.href,
+						2), '/', 1)
+						) AS systemid,
+						m.id AS 'menuList.id',
+						m.`name` AS 'menuList.menuName',
+						REPLACE(m.href,CONCAT(
+							'/',
+							SUBSTRING_INDEX(SUBSTRING(m.href, 2), '/',  1)
+						),'') AS 'menuList.menuHref',
+						m.sort,
+						sm.id AS 'fieldList.id',
+						sm.permission AS 'fieldList.fieldId',
+						sm.`name` AS 'fieldList.fieldName'
+				   FROM
+						(
+						sys_user u,
+						sys_role r,
+						sys_user_role ur,
+						sys_role_menu rm
+						),
+						sys_menu m
+				   LEFT JOIN sys_menu sm ON (
+						m.id = sm.parent_id
+						AND sm.del_flag = '0'
+						AND m.del_flag = '0'
+						)
+				    WHERE   m.href IS NOT NULL
+						AND m.href != ''
+						AND ur.role_id = r.id
+						AND ur.user_id = u.id
+						AND r.useable = '1'
+						AND r.del_flag = '0'
+						AND u.del_flag = '0'
+						AND rm.role_id = r.id
+						AND rm.menu_id = m.id
+						AND SUBSTRING_INDEX(SUBSTRING(m.href, 2), '/', 1) IN (
+						SELECT DISTINCT
+						SUBSTRING_INDEX(enname, '_', 1) AS systemId
+						FROM sys_role
+						)
+						AND u.login_name = #{userId}]]>
+		<if test="systemId !=null and systemId !=''">
+		<![CDATA[AND IF (
+						SUBSTRING_INDEX(r.enname, '_', 1) = SUBSTRING_INDEX(SUBSTRING(m.href, 2), '/', 1),
+						SUBSTRING_INDEX(r.enname, '_', 1),
+						SUBSTRING_INDEX(SUBSTRING(m.href, 2), '/', 1)
+		                )= upper(#{systemId})]]>
+		</if>
+		<![CDATA[ORDER BY systemid,sort]]>
+	</select>
+
+</mapper>

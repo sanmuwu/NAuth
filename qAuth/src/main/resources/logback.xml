@@ -10,9 +10,9 @@
 	<!-- 文件输出 -->
 	<appender name="rollingFile"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>./logs/qauth-platform_info.log</file>
+		<file>./logs/nauth-platform_info.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>./logs/qauth-platform_info_%d{yyyy-MM-dd}_%i
+			<fileNamePattern>./logs/nauth-platform_info_%d{yyyy-MM-dd}_%i
 			</fileNamePattern>
 			<MaxHistory>100</MaxHistory>
 			<TimeBasedFileNamingAndTriggeringPolicy
@@ -33,9 +33,9 @@
 	<!-- 错误日志输出 -->
 	<appender name="errorAppender"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>./logs/bpms-platform_error.log</file>
+		<file>./logs/nauth-platform_error.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>./logs/qauth-platform_error_%d{yyyy-MM-dd}_%i.log
+			<fileNamePattern>./logs/nauth-platform_error_%d{yyyy-MM-dd}_%i.log
 			</fileNamePattern>
 			<MaxHistory>100</MaxHistory>
 			<TimeBasedFileNamingAndTriggeringPolicy
@@ -53,8 +53,8 @@
 	</appender>
 	<!-- 日志输出级别 -->
 	<!-- project default level -->
-	<logger name="com.qf.qauth" level="INFO" />
-	<logger name="com.qf.qauth.modules.sys.dao" level="DEBUG" />
+	<logger name="com.qf.nauth" level="INFO" />
+	<logger name="com.qf.nauth.modules.sys.dao" level="DEBUG" />
 	<root level="INFO">
 		<appender-ref ref="console" />
 		<appender-ref ref="rollingFile" />

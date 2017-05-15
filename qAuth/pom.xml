@@ -3,12 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.qf.qauth</groupId>
-	<artifactId>qauth</artifactId>
+	<groupId>com.qf.nauth</groupId>
+	<artifactId>nauth</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
-	<name>qAuth</name>
+	<name>nAuth</name>
 	<description>quark fance oauth</description>
 
 	<parent>
@@ -283,7 +283,7 @@
 
 
 	<build>
-		<finalName>qauth</finalName>
+		<finalName>nauth</finalName>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
 		<plugins>

@@ -9,8 +9,8 @@
 			$("#no").focus();
 			$("#inputForm").validate({
 				rules: {
-					loginName: {remote: "${ctx}/sys/user/checkLoginName?oldLoginName=" + encodeURIComponent('${user.loginName}')},
-					no: {remote: "${ctx}/sys/user/checkNo?oldNo=" + encodeURIComponent('${user.no}')}
+					loginName: {remote: "${ctx}/sys/user/checkLoginName?oldLoginName=" + encodeURIComponent('${user.loginName}')}
+			        //,no: {remote: "${ctx}/sys/user/checkNo?oldNo=" + encodeURIComponent('${user.no}')}
 				},
 				messages: {
 					loginName: {remote: "用户登录名已存在"},
@@ -182,6 +182,7 @@
 		<div class="form-actions">
 			<shiro:hasPermission name="sys:user:edit"><input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;</shiro:hasPermission>
 			<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
+			<input id="btnFill" class="btn" type="button" value="填 充" onclick="fillData()"/>
 		</div>
 	</form:form>
 	</c:if>
@@ -314,6 +315,7 @@
 		<div class="form-actions">
 			<input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;
 			<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
+			<input id="btnFill" class="btn" type="button" value="填 充" onclick="fillData()"/>
 		</div>
 	</form:form>
 	</c:if>
