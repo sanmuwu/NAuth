@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.qauth.modules.sys.dao.SysAuthDao">
+		
+	<!-- 用户的角色集合 -->
+	<resultMap id="permissionRoleResult" type="PermissionRole">
+		<id property="id" column="id" />
+		<result property="roleCName" column="roleCname" />
+		<result property="roleEName" column="roleEname" />
+	</resultMap>
+	
+	<!-- 用户的权限集合 -->
+	<resultMap id="menuPermissionResult" type="MenuPermission">
+		<id property="id" column="id" />
+		<result property="menuName" column="menuName" />
+		<result property="menuHref" column="menuHref" />
+		<collection property="menuPermissionList" ofType="Permission">
+			<id property="id" column="menuPermissionList.id"/>
+			<result property="cName" column="menuPermissionList.cName" />
+			<result property="permission" column="menuPermissionList.permission" />
+		</collection>
+	</resultMap>
+	
+	<sql id="userColumns">
+    	a.id,
+    	a.office_id AS "office.id",
+    	a.login_name,
+		a.name,
+		a.email,
+    	o.name AS "office.name"
+    </sql>
+        
+    <sql id="userJoins">
+		LEFT JOIN sys_office o ON o.id = a.office_id
+    </sql>
+    
+	<!-- 根据登录名查询用户 -->
+	<select id="getByLoginName" resultType="AuthUser">
+		SELECT
+			<include refid="userColumns"/>
+		FROM auth_user a
+		<include refid="userJoins"/>
+		WHERE a.login_name = #{loginName} AND a.del_flag = #{DEL_FLAG_NORMAL}
+		LIMIT 1;
+	</select>
+	
+	<!-- 查询用户角色集合 -->	
+	<select id="getRoleListByUser" resultMap="permissionRoleResult">
+		SELECT DISTINCT
+			r.id AS 'id',
+			r.name AS 'roleCname',
+			r.enname AS 'roleEname'
+		FROM auth_role r
+		JOIN auth_user_role ur ON ur.role_id = r.id
+		WHERE r.del_flag = #{DEL_FLAG_NORMAL} 
+			AND ur.user_id = #{id}
+	</select>
+	
+	<!-- 根据角色ID获取用户权限集合 -->
+	<select id="getMenuListByRoleIds" resultMap="menuPermissionResult">
+		SELECT DISTINCT
+			m.id AS 'id',
+			m.name AS 'menuName',
+			m.href AS 'menuHref',
+			pm.id  AS 'menuPermissionList.id',
+			pm.name AS 'menuPermissionList.cName',
+			pm.permission AS 'menuPermissionList.permission',
+			m.sort
+		FROM auth_menu pm
+			,auth_menu m
+			,auth_role_menu rm 
+			,auth_role r 
+		WHERE pm.parent_id = m.id
+			AND rm.menu_id = m.id
+			AND r.id = rm.role_id AND r.useable='1'
+			AND pm.del_flag = 0 
+			AND m.del_flag = 0 
+			AND r.del_flag = 0 
+			AND r.id IN 
+			<foreach collection="list" item="roleId" open="(" close=")" separator=",">
+	            #{roleId}
+	        </foreach>
+		ORDER BY m.sort
+	</select>
+</mapper>

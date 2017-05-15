@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.qauth.modules.sys.dao.DbIncrementNumDao">
+    
+    <select id="getCurrNoByBussKey" resultType="DbIncrementNum">
+    	SELECT id, 
+    		buss_key, 
+    		curr_no, 
+    		create_by, 
+    		update_by, 
+    		update_date
+    	FROM sys_incrment_num
+    	WHERE buss_key = #{bussKey}
+    		AND del_flag = #{DEL_FLAG_NORMAL} FOR UPDATE;
+    </select>
+    
+    <update id="update">
+    	UPDATE sys_incrment_num set 
+    		curr_no = #{currNo},
+    		update_by = #{updateBy.id}, 
+			update_date = #{updateDate}
+    	WHERE buss_key = TRIM(#{bussKey}) 
+    		AND del_flag = #{DEL_FLAG_NORMAL}
+    </update>
+    
+    <insert id="insert">
+    	INSERT INTO sys_incrment_num(
+    		id,
+    		buss_key,
+    		curr_no,
+    		create_by, 
+			create_date, 
+			update_by, 
+			update_date, 
+			del_flag
+    	) VALUES (
+    		#{id}, 
+			TRIM(#{buss_key}), 
+			TRIM(#{curr_no}), 
+			#{createBy.id}, 
+			#{createDate}, 
+			#{updateBy.id}, 
+			#{updateDate}, 
+			#{delFlag}
+    	)
+    </insert>
+    
+</mapper>
