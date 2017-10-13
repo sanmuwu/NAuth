@@ -12,7 +12,7 @@ public class Test {
 		System.out.println("fifth!");
 		System.out.println("seventh!");
 		System.out.println("sixth!");
-
+		System.out.println("seventh!");
 
 	}
 
