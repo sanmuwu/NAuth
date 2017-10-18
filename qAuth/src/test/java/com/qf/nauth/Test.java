@@ -12,6 +12,8 @@ public class Test {
 		System.out.println("fifth!");
 		System.out.println("sixth!");
 		System.out.println("eight!");
+		System.out.println("seventh!");
+
 
 	}
 
