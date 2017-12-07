@@ -18,6 +18,8 @@ public class Test {
 		System.out.println("twelve!");
 		System.out.println("thirteen!");
 		System.out.println("sixteen!");
+		System.out.println("fourteen!");
+		System.out.println("fifteen!");
 	}
 
 }
