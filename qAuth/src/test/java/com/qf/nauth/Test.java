@@ -20,7 +20,7 @@ public class Test {
 		System.out.println("sixteen!");
 		System.out.println("fourteen!");
 		System.out.println("test!");
-		System.out.println("啛啛喳喳22!");
+		System.out.println("啛啛喳喳44!");
 		System.out.println("seventeen!");
 	}
 
