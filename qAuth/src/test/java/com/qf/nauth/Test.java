@@ -34,7 +34,7 @@ public class Test {
 		}else if(pmtAmtMoth.compareTo(new BigDecimal(7))==-1){
 			System.out.println("小于");
 		}else {
-			System.out.println("异常cc");
+			System.out.println("异常ccdd");
 		}
 	}
 
