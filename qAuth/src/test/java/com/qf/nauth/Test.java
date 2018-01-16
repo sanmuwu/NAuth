@@ -24,6 +24,7 @@ public class Test {
 		System.out.println("啛啛喳喳22!");
 		System.out.println("啛啛喳喳22!");
 		System.out.println("seventeen!");
+		System.out.println("seventeen!");
 	}
 
 }
